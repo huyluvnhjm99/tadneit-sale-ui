@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tadneit_sale/features/home/widgets/language_selector.dart';
 import '../../../features/auth/providers/login_provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,6 +36,7 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            LanguageSelector(),
             // Welcome section
             Card(
               child: Padding(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tadneit_sale/core/errors/api_exception.dart';
 import '../../../core/utils/api_error_handler.dart';
+import '../../../core/utils/language_service.dart';
 import '../providers/login_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -49,7 +51,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       //     ),
       //   );
       // });
-      ApiErrorHandler.showErrorSnackBar(context, loginState.errorMessage!);
     }
 
     return Scaffold(
@@ -66,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (isLoggedIn) ...[
-                Text("Welcome ${ loginState.isLoggedIn }"),
+                Text("${LanguageService.translate('welcome')} ${ loginState.isLoggedIn }"),
                 ElevatedButton(
                   onPressed: loginState.isLoading
                       ? null
@@ -76,20 +77,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   child: loginState.isLoading
                       ? CircularProgressIndicator()
-                      : Text('Logout', style: TextStyle(fontSize: 16)),
+                      : Text(LanguageService.translate('logout'), style: TextStyle(fontSize: 16)),
                 ),
               ]
               else ...[
                 TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: LanguageService.translate('username'),
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
+                      return LanguageService.translate('pleaseEnterYourUsername');
                     }
                     return null;
                   },
@@ -99,14 +100,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: LanguageService.translate('password'),
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lock),
                   ),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return LanguageService.translate('pleaseEnterYourPassword');
                     }
                     return null;
                   },
@@ -122,7 +123,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   child: loginState.isLoading
                       ? CircularProgressIndicator()
-                      : Text('Login', style: TextStyle(fontSize: 16)),
+                      : Text(LanguageService.translate('login'), style: TextStyle(fontSize: 16)),
                 ),
               ]
             ],
@@ -135,10 +136,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       // Trigger login
-      await ref.read(loginProvider.notifier).login(
-        _usernameController.text,
-        _passwordController.text,
-      );
+      try {
+        await ref.read(loginProvider.notifier).login(
+          _usernameController.text,
+          _passwordController.text,
+        );
+      } on ApiException catch (e) {
+        if (mounted) {
+          ApiErrorHandler.showErrorSnackBar(context, e.message);
+        }
+      }
     }
   }
 

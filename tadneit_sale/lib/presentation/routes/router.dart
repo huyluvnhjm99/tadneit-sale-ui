@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/home/screens/home_screen.dart';
-import '../../features/auth/providers/login_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   //final loginState = ref.read(loginProvider);

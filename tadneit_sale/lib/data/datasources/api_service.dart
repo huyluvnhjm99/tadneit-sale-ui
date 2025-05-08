@@ -2,10 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:tadneit_sale/data/models/auth/auth_token.dart';
 import 'package:tadneit_sale/data/models/auth/login_request.dart';
-import 'package:tadneit_sale/data/models/auth/login_response.dart';
 import 'package:tadneit_sale/data/models/auth/refresh_token_request.dart';
+import 'package:tadneit_sale/data/models/auth/user_profile.dart';
 
 part 'api_service.g.dart';
+// dart run build_runner build
 
 @RestApi()
 abstract class ApiService {
@@ -17,6 +18,10 @@ abstract class ApiService {
 
   @POST('/auth/refresh')
   Future<AuthTokenDTO> refreshToken(@Body() RefreshTokenRequest request);
+
+  // User Management
+  @POST('/u/profile')
+  Future<UserProfileDTO> getUserProfile();
 
   // Example of a protected endpoint
   // @GET('/users/me')

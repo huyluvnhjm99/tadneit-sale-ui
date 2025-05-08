@@ -1,0 +1,50 @@
+{
+  "username": "Username",
+  "password": "Password",
+  "login": "Login",
+  "logout": "Logout",
+  "welcome": "Welcome",
+
+  "pleaseEnterYourUsername": "Please enter your username",
+  "pleaseEnterYourPassword": "Please enter your password",
+
+  "unknownError": "An unknown error occurred",
+
+  "errorConnectionTimeout": "Connection timeout. Please check your internet connection.",
+  "errorSendTimeout": "Send timeout. Please check your internet connection.",
+  "errorReceiveTimeout": "Receive timeout. Please check your internet connection.",
+  "errorNoConnection": "No internet connection.",
+  "errorBadResponse": "Bad response from server.",
+  "errorRequestCancelled": "Request was cancelled.",
+  "errorUnexpected": "An unexpected error occurred.",
+
+  "error400": "Bad request. Please check your input.",
+  "error401": "Unauthorized. Please login again.",
+  "error403": "Access forbidden.",
+  "error404": "Resource not found.",
+  "error500": "Server error. Please try again later.",
+  "error502": "Bad gateway. Please try again later.",
+  "error503": "Service unavailable. Please try again later.",
+  "errorHttpGeneric": "HTTP error {code} occurred.",
+
+  "dismiss": "Dismiss",
+
+  "authUserNotFound": "Username or password is incorrect.",
+  "authUserInvalidPassword": "Incorrect password. Please try again.",
+  "authUserLocked": "Your account has been locked. Please contact support.",
+  "authTokenExpired": "Your session has expired. Please log in again.",
+  "authPasswordInvalid": "The password you entered is incorrect",
+  "authActionInvalid": "Authentication action is invalid",
+
+  "userUsernameAlreadyExisted": "This username is already taken",
+  "registrationSucceed": "Registration successful",
+
+  "userFullNameNotnull": "Full name is required",
+  "userFullNameSizeThreeTwenty": "Full name must be between 3 and 20 characters",
+  "userUsernameNotNull": "Username is required",
+  "userUsernameSizeThreeTwenty": "Username must be between 3 and 20 characters",
+  "userUsernamePattern": "Username can only contain letters, numbers, and underscores",
+  "userPasswordNotnull": "Password is required",
+  "userPasswordSizeSixTwenty": "Password must be between 6 and 20 characters",
+  "userPasswordPattern": "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character"
+}

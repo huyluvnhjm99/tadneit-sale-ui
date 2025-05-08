@@ -1,0 +1,50 @@
+{
+  "username": "tên tài khoản",
+  "password": "mật khẩu",
+  "login": "Đăng nhập",
+  "logout": "Đăng xuất",
+  "welcome": "Chào",
+
+  "pleaseEnterYourUsername": "Vui lòng nhập tài khoản",
+  "pleaseEnterYourPassword": "Vui lòng nhập mật khẩu",
+
+  "unknownError": "Đã xảy ra lỗi không xác định",
+
+  "errorConnectionTimeout": "Hết thời gian kết nối. Vui lòng kiểm tra kết nối internet của bạn.",
+  "errorSendTimeout": "Hết thời gian gửi. Vui lòng kiểm tra kết nối internet của bạn.",
+  "errorReceiveTimeout": "Hết thời gian nhận. Vui lòng kiểm tra kết nối internet của bạn.",
+  "errorNoConnection": "Không có kết nối internet.",
+  "errorBadResponse": "Phản hồi không hợp lệ từ máy chủ.",
+  "errorRequestCancelled": "Yêu cầu đã bị hủy.",
+  "errorUnexpected": "Đã xảy ra lỗi không mong muốn.",
+
+  "error400": "Yêu cầu không hợp lệ. Vui lòng kiểm tra đầu vào của bạn.",
+  "error401": "Chưa xác thực. Vui lòng đăng nhập lại.",
+  "error403": "Truy cập bị từ chối.",
+  "error404": "Không tìm thấy tài nguyên.",
+  "error500": "Lỗi máy chủ. Vui lòng thử lại sau.",
+  "error502": "Lỗi cổng. Vui lòng thử lại sau.",
+  "error503": "Dịch vụ không khả dụng. Vui lòng thử lại sau.",
+  "errorHttpGeneric": "Đã xảy ra lỗi HTTP {code}.",
+
+  "dismiss": "Đóng",
+
+  "authUserNotFound": "Tên đăng nhập hoặc mật khẩu không chính xác.",
+  "authUserInvalidPassword": "Mật khẩu không chính xác. Vui lòng thử lại.",
+  "authUserLocked": "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ hỗ trợ.",
+  "authTokenExpired": "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.",
+  "authPasswordInvalid": "Mật khẩu bạn nhập không chính xác",
+  "authActionInvalid": "Hành động xác thực không hợp lệ",
+
+  "userUsernameAlreadyExisted": "Tên đăng nhập này đã được sử dụng",
+  "registrationSucceed": "Đăng ký thành công",
+
+  "userFullNameNotnull": "Họ tên là bắt buộc",
+  "userFullNameSizeThreeTwenty": "Họ tên phải có từ 3 đến 20 ký tự",
+  "userUsernameNotNull": "Tên đăng nhập là bắt buộc",
+  "userUsernameSizeThreeTwenty": "Tên đăng nhập phải có từ 3 đến 20 ký tự",
+  "userUsernamePattern": "Tên đăng nhập chỉ có thể chứa chữ cái, số và dấu gạch dưới",
+  "userPasswordNotnull": "Mật khẩu là bắt buộc",
+  "userPasswordSizeSixTwenty": "Mật khẩu phải có từ 6 đến 20 ký tự",
+  "userPasswordPattern": "Mật khẩu phải bao gồm ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt"
+}

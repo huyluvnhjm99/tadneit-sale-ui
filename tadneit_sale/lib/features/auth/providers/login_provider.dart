@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tadneit_sale/core/errors/api_exception.dart';
 import 'package:tadneit_sale/features/auth/base_state.dart';
 import '../../../data/providers/auth_provider.dart';
 
@@ -51,12 +52,11 @@ class LoginNotifier extends StateNotifier<LoginState> {
           errorMessage: 'Invalid username or password',
         );
       }
-    } catch (e) {
-      // Handle errors
+    } on ApiException {
       state = state.copyWith(
-        isLoading: false,
-        errorMessage: 'An error occurred: ${e.toString()}',
+        isLoading: false
       );
+      rethrow;
     }
   }
 

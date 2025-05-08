@@ -1,7 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tadneit_sale/core/errors/api_exception.dart';
 import 'package:tadneit_sale/data/models/auth/login_request.dart';
-import '../models/auth/refresh_token_request.dart';
 import 'api_service_provider.dart';
 
 // Rename this provider to authServiceProvider
@@ -44,12 +45,19 @@ class AuthService {
       final response = await apiService.login(
         LoginRequestDTO(username: username, password: password),
       );
-
       await saveTokens(response);
+
+      // Load Profile
+
+
       return true;
-    } catch (e) {
-      return false;
+    } on DioException catch (e) {
+      throw ApiException(e);
     }
+  }
+
+  Future<void> loadProfile() async {
+
   }
 
   Future<void> logout() async {
