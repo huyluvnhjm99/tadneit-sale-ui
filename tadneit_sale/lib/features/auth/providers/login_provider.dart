@@ -30,7 +30,7 @@ class LoginState extends BaseState {
 }
 
 class LoginNotifier extends StateNotifier<LoginState> {
-  final AuthService _authService;  // Changed from AuthProvider to AuthService
+  final AuthService _authService;
 
   LoginNotifier(this._authService) : super(LoginState());
 
@@ -40,13 +40,12 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
     try {
       // Perform login
-      final success = await _authService.login(username, password);
+      final bool success = await _authService.login(username, password);
 
       if (success) {
         state = state.copyWith(isLoading: false, isLoggedIn: true);
         clearError();
       } else {
-        // Login failed
         state = state.copyWith(
           isLoading: false,
           errorMessage: 'Invalid username or password',
@@ -54,10 +53,14 @@ class LoginNotifier extends StateNotifier<LoginState> {
       }
     } on ApiException {
       state = state.copyWith(
-        isLoading: false
+          isLoading: false
       );
       rethrow;
     }
+  }
+
+  void clearIsLoggedIn() {
+    state = state.copyWith(isLoggedIn: false);
   }
 
   void clearError() {
@@ -82,7 +85,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final token = await _authService.getAccessToken();
+      final String? token = await _authService.getAccessToken();
       state = state.copyWith(
         isLoading: false,
         isLoggedIn: token != null,
@@ -97,13 +100,13 @@ class LoginNotifier extends StateNotifier<LoginState> {
 }
 
 // Login providers
-final loginProvider = StateNotifierProvider<LoginNotifier, LoginState>((ref) {
-  final authService = ref.watch(authServiceProvider);  // Updated to use authServiceProvider
+final StateNotifierProvider<LoginNotifier, LoginState> loginProvider = StateNotifierProvider<LoginNotifier, LoginState>((Ref ref) {
+  final AuthService authService = ref.watch(authServiceProvider);  // Updated to use authServiceProvider
   return LoginNotifier(authService);
 });
 
 // Auto-login provider to check existing tokens on app start
-final autoLoginProvider = FutureProvider<void>((ref) async {
-  final loginNotifier = ref.read(loginProvider.notifier);
+final FutureProvider<void> autoLoginProvider = FutureProvider<void>((Ref<void> ref) async {
+  final LoginNotifier loginNotifier = ref.read(loginProvider.notifier);
   await loginNotifier.checkAuthStatus();
 });

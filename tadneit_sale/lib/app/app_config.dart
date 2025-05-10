@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 enum Environment {
@@ -35,7 +37,11 @@ class AppConfig {
     await dotenv.load(fileName: envFile);
 
     // Initialize configuration
-    apiBaseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:7077/api/sss';
+    if (environment == Environment.development && Platform.isAndroid) {
+      apiBaseUrl = 'http://10.0.2.2:7077/api/s';
+    } else {
+      apiBaseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:7077/api/sss';
+    }
     appName = dotenv.env['APP_NAME'] ?? 'TadNeit Sale App';
   }
 

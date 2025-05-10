@@ -14,8 +14,8 @@ class ErrorInterceptor extends Interceptor {
             responseData.containsKey('message')) {
 
           // Create a new error with the extracted message
-          final errorMessage = responseData['message'] as String;
-          final newError = DioException(
+          final String errorMessage = responseData['message'] as String;
+          final DioException newError = DioException(
             requestOptions: err.requestOptions,
             response: err.response,
             type: err.type,

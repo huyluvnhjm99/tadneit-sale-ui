@@ -10,20 +10,19 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Get login state
-    final loginState = ref.watch(loginProvider);
-    final isLoggedIn = loginState.isLoggedIn;
-    print("isLoggedIn: " + isLoggedIn.toString());
+    final LoginState loginState = ref.watch(loginProvider);
+    final bool isLoggedIn = loginState.isLoggedIn;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sondiennuoc.vn'),
-        actions: [
+        actions: <Widget>[
           // Show login/logout button based on login state
           IconButton(
             icon: Icon(isLoggedIn ? Icons.logout : Icons.login),
             onPressed: () {
               if (isLoggedIn) {
-                _showLogoutDialog(context, ref);
+                context.push('/profile');
               } else {
                 context.push('/login');
               }
@@ -33,113 +32,115 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            LanguageSelector(),
-            // Welcome section
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      isLoggedIn ? 'Welcome Back!' : 'Welcome to Our App!',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'This is a demo Flutter application with Spring Boot backend integration.',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ],
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const LanguageSelector(),
+              // Welcome section
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        isLoggedIn ? 'Welcome Back!' : 'Welcome to Our App!',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'This is a demo Flutter application with Spring Boot backend integration.',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Public features section
-            Text(
-              'Public Features',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            _buildFeatureCard(
-              context,
-              title: 'Browse Products',
-              description: 'View all available products in our catalog',
-              icon: Icons.shopping_bag,
-              onTap: () {
-                // Navigate to public products page
-                // This is public, no login required
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Navigating to Products')),
-                );
-                // context.push('/products');
-              },
-            ),
-
-            _buildFeatureCard(
-              context,
-              title: 'About Us',
-              description: 'Learn more about our company and mission',
-              icon: Icons.info,
-              onTap: () {
-                // Navigate to about page
-                // This is public, no login required
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Navigating to About Us')),
-                );
-                // context.push('/about');
-              },
-            ),
-
-            const SizedBox(height: 24),
-
-            // Protected features section
-            Text(
-              'Premium Features',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            _buildFeatureCard(
-              context,
-              title: 'My Profile',
-              description: 'View and edit your profile information',
-              icon: Icons.person,
-              onTap: () {
-                // Check if logged in
-                if (isLoggedIn) {
+          
+              const SizedBox(height: 24),
+          
+              // Public features section
+              Text(
+                'Public Features',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 16),
+              _buildFeatureCard(
+                context,
+                title: 'Browse Products',
+                description: 'View all available products in our catalog',
+                icon: Icons.shopping_bag,
+                onTap: () {
+                  // Navigate to public products page
+                  // This is public, no login required
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Navigating to Profile')),
+                    const SnackBar(content: Text('Navigating to Products')),
                   );
-                  // context.push('/profile');
-                } else {
-                  _showLoginRequiredDialog(context);
-                }
-              },
-            ),
-
-            _buildFeatureCard(
-              context,
-              title: 'My Orders',
-              description: 'Track and manage your orders',
-              icon: Icons.shopping_cart,
-              onTap: () {
-                // Check if logged in
-                if (isLoggedIn) {
+                  // context.push('/products');
+                },
+              ),
+          
+              _buildFeatureCard(
+                context,
+                title: 'About Us',
+                description: 'Learn more about our company and mission',
+                icon: Icons.info,
+                onTap: () {
+                  // Navigate to about page
+                  // This is public, no login required
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Navigating to Orders')),
+                    const SnackBar(content: Text('Navigating to About Us')),
                   );
-                  // context.push('/orders');
-                } else {
-                  _showLoginRequiredDialog(context);
-                }
-              },
-            ),
-          ],
+                  // context.push('/about');
+                },
+              ),
+          
+              const SizedBox(height: 24),
+          
+              // Protected features section
+              Text(
+                'Premium Features',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 16),
+              _buildFeatureCard(
+                context,
+                title: 'My Profile',
+                description: 'View and edit your profile information',
+                icon: Icons.person,
+                onTap: () {
+                  // Check if logged in
+                  if (isLoggedIn) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Navigating to Profile')),
+                    );
+                    // context.push('/profile');
+                  } else {
+                    _showLoginRequiredDialog(context);
+                  }
+                },
+              ),
+          
+              _buildFeatureCard(
+                context,
+                title: 'My Orders',
+                description: 'Track and manage your orders',
+                icon: Icons.shopping_cart,
+                onTap: () {
+                  // Check if logged in
+                  if (isLoggedIn) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Navigating to Orders')),
+                    );
+                    // context.push('/orders');
+                  } else {
+                    _showLoginRequiredDialog(context);
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -159,13 +160,13 @@ class HomeScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
-            children: [
+            children: <Widget>[
               Icon(icon, size: 40, color: Theme.of(context).primaryColor),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Text(
                       title,
                       style: Theme.of(context).textTheme.titleMedium,
@@ -189,12 +190,12 @@ class HomeScreen extends ConsumerWidget {
   void _showLoginRequiredDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (BuildContext context) => AlertDialog(
         title: const Text('Login Required'),
         content: const Text(
             'You need to login to access this feature. Would you like to login now?'
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
@@ -214,10 +215,10 @@ class HomeScreen extends ConsumerWidget {
   void _showLogoutDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (BuildContext context) => AlertDialog(
         title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
-        actions: [
+        actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),

@@ -23,6 +23,9 @@ abstract class ApiService {
   @POST('/u/profile')
   Future<UserProfileDTO> getUserProfile();
 
+  @PUT('/u/save')
+  Future<UserProfileDTO> saveUserProfile(@Body() UserProfileDTO userProfileDTO);
+
   // Example of a protected endpoint
   // @GET('/users/me')
   // Future<Map<String, dynamic>> getUserProfile();

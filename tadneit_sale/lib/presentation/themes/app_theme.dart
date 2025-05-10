@@ -7,7 +7,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.blue,
+        seedColor: Colors.cyan,
         brightness: Brightness.light,
       ),
       appBarTheme: const AppBarTheme(
@@ -91,6 +91,6 @@ class AppTheme {
 }
 
 // Theme mode provider
-final themeModeProvider = StateProvider<ThemeMode>((ref) {
+final StateProvider<ThemeMode> themeModeProvider = StateProvider<ThemeMode>((StateProviderRef<ThemeMode> ref) {
   return ThemeMode.system;
 });

@@ -5,11 +5,11 @@ import '../datasources/error_interceptor.dart'; // Add import
 import '../../app/app_config.dart';
 import 'auth_provider.dart';
 
-final dioProvider = Provider<Dio>((ref) {
-  final dio = Dio(BaseOptions(
+final Provider<Dio> dioProvider = Provider<Dio>((Ref<Dio> ref) {
+  final Dio dio = Dio(BaseOptions(
     baseUrl: AppConfig.apiBaseUrl,
-    connectTimeout: Duration(seconds: 30),
-    receiveTimeout: Duration(seconds: 30),
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(seconds: 30),
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -30,7 +30,7 @@ final dioProvider = Provider<Dio>((ref) {
   dio.interceptors.add(ErrorInterceptor());
 
   // Add auth interceptor
-  final authService = ref.read(authServiceProvider);
+  final AuthService authService = ref.read(authServiceProvider);
   dio.interceptors.add(AuthInterceptor(dio, authService));
 
   return dio;

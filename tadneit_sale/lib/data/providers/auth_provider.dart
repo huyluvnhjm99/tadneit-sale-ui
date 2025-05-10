@@ -2,15 +2,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tadneit_sale/core/errors/api_exception.dart';
+import 'package:tadneit_sale/core/utils/language_service.dart';
+import 'package:tadneit_sale/data/datasources/api_service.dart';
 import 'package:tadneit_sale/data/models/auth/login_request.dart';
+import 'package:tadneit_sale/data/providers/message_provider.dart';
+import 'package:tadneit_sale/features/auth/providers/login_provider.dart';
 import 'api_service_provider.dart';
 
-// Rename this provider to authServiceProvider
-final authServiceProvider = Provider<AuthService>((ref) {
+final Provider<AuthService> authServiceProvider = Provider<AuthService>((Ref<AuthService> ref) {
   return AuthService(ref);
 });
 
-// Also rename the class to AuthService for consistency
 class AuthService {
   final Ref ref;
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
@@ -41,14 +43,11 @@ class AuthService {
 
   Future<bool> login(String username, String password) async {
     try {
-      final apiService = ref.read(apiServiceProvider);
-      final response = await apiService.login(
+      final ApiService apiService = ref.read(apiServiceProvider);
+      final String response = await apiService.login(
         LoginRequestDTO(username: username, password: password),
       );
       await saveTokens(response);
-
-      // Load Profile
-
 
       return true;
     } on DioException catch (e) {
@@ -56,11 +55,9 @@ class AuthService {
     }
   }
 
-  Future<void> loadProfile() async {
-
-  }
-
   Future<void> logout() async {
     await _secureStorage.deleteAll();
+    ref.read(loginProvider.notifier).clearIsLoggedIn();
+    ref.read(messageProvider.notifier).state = LanguageService.translate('unauthorized');
   }
 }

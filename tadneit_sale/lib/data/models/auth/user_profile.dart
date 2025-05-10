@@ -1,28 +1,28 @@
 import '../../../core/constants/enums.dart';
 
 class UserProfileDTO {
-  final String id;
+  String? id;
   String? fullName;
-  String username;
+  String? username;
   String? phone;
   String? email;
   String? avatarUrl;
   DateTime? dob;
   DateTime? lastLogin;
-  SaleUserRole role;
-  SaleUserStatus status;
+  SaleUserRole? role;
+  SaleUserStatus? status;
 
   UserProfileDTO({
-    required this.id,
+    this.id,
     this.fullName,
-    required this.username,
+    this.username,
     this.phone,
     this.email,
     this.avatarUrl,
     this.dob,
     this.lastLogin,
-    required this.role,
-    required this.status,
+    this.role,
+    this.status,
   });
 
   factory UserProfileDTO.fromJson(Map<String, dynamic> json) {
@@ -33,8 +33,8 @@ class UserProfileDTO {
       phone: json['phone'],
       email: json['email'],
       avatarUrl: json['avatarUrl'] ?? '',
-      dob: DateTime.parse(json['dob']),
-      lastLogin: DateTime.parse(json['lastLogin']),
+      dob: json['dob'] != null ? DateTime.parse(json['dob']) : null,
+      lastLogin: json['lastLogin'] != null ? DateTime.parse(json['lastLogin']) : null,
       role: SaleUserRole.fromString(json['role']),
       status: SaleUserStatus.fromString(json['status'] ?? 'INACTIVE'),
     );
@@ -50,8 +50,8 @@ class UserProfileDTO {
       'avatarUrl': avatarUrl,
       'dob': dob?.toIso8601String(),
       'lastLogin': lastLogin?.toIso8601String(),
-      'role': role.name,
-      'status': status.name,
+      'role': role?.name,
+      'status': status?.name,
     };
   }
 }

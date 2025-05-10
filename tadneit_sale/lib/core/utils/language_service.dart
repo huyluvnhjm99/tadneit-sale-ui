@@ -7,7 +7,7 @@ class LanguageService {
   static const String defaultLanguage = 'en';
 
   // Cache for loaded translations
-  static Map<String, Map<String, String>> _translations = {};
+  static final Map<String, Map<String, String>> _translations = <String, Map<String, String>>{};
   static String _currentLanguage = defaultLanguage;
 
   // Get currently selected language
@@ -15,7 +15,7 @@ class LanguageService {
 
   // Initialize the language service
   static Future<void> init() async {
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     _currentLanguage = prefs.getString(_languagePrefsKey) ?? defaultLanguage;
 
     // Load translations for current language
@@ -27,7 +27,7 @@ class LanguageService {
     if (_currentLanguage == languageCode) return;
 
     // Save preference
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_languagePrefsKey, languageCode);
 
     // Update current language
@@ -43,12 +43,12 @@ class LanguageService {
 
     try {
       // Load JSON file from assets
-      final jsonString = await rootBundle.loadString('assets/translations/$languageCode.json');
+      final String jsonString = await rootBundle.loadString('assets/translations/$languageCode.json');
       final Map<String, dynamic> jsonMap = json.decode(jsonString);
 
       // Convert all values to strings
-      final Map<String, String> stringMap = {};
-      jsonMap.forEach((key, value) {
+      final Map<String, String> stringMap = <String, String>{};
+      jsonMap.forEach((String key, value) {
         if (value is String) {
           stringMap[key] = value;
         }
@@ -63,7 +63,7 @@ class LanguageService {
         return;
       }
       // Create empty translations if nothing available
-      _translations[languageCode] = {};
+      _translations[languageCode] = <String, String>{};
     }
   }
 
@@ -80,7 +80,7 @@ class LanguageService {
 
     // Replace parameters if provided
     if (params != null) {
-      params.forEach((paramKey, paramValue) {
+      params.forEach((String paramKey, String paramValue) {
         translation = translation.replaceAll('{$paramKey}', paramValue);
       });
     }

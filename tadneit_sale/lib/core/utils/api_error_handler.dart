@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 import 'language_service.dart';
 
@@ -50,13 +49,13 @@ class ApiErrorHandler {
         return LanguageService.translate('error503');
       default:
         return LanguageService.translate('errorHttpGeneric',
-            params: {'code': statusCode?.toString() ?? 'unknown'});
+            params: <String, String>{'code': statusCode?.toString() ?? 'unknown'});
     }
   }
 
   // Show error message to user
   static void showErrorSnackBar(BuildContext context, String error) {
-    final message = getErrorMessage(error);
+    final String message = getErrorMessage(error);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (context.mounted) {
@@ -66,6 +65,30 @@ class ApiErrorHandler {
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: LanguageService.translate('dismiss'),
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  static void showSuccessSnackBar(BuildContext context, String? success) {
+    final String message = getErrorMessage(success ?? 'successfully');
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
             action: SnackBarAction(
               label: LanguageService.translate('dismiss'),
               textColor: Colors.white,

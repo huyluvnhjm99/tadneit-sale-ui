@@ -13,9 +13,9 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -27,35 +27,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     // Listen to login state
-    final loginState = ref.watch(loginProvider);
+    final LoginState loginState = ref.watch(loginProvider);
     final bool isLoggedIn = loginState.isLoggedIn;
-
-    // If login state changes to logged in, the router will automatically
-    // redirect to the home screen due to our router configuration
-
-    // Show error message if there is one
-    if (loginState.errorMessage != null) {
-      // Use delayed microtask to avoid build phase errors
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(
-      //       content: Text(loginState.errorMessage!),
-      //       backgroundColor: Colors.red,
-      //       action: SnackBarAction(
-      //         label: 'Dismiss',
-      //         onPressed: () {
-      //           // Clear the error
-      //           ref.read(loginProvider.notifier).clearError();
-      //         },
-      //       ),
-      //     ),
-      //   );
-      // });
-    }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         automaticallyImplyLeading: true,
       ),
       body: Padding(
@@ -65,67 +42,51 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (isLoggedIn) ...[
-                Text("${LanguageService.translate('welcome')} ${ loginState.isLoggedIn }"),
-                ElevatedButton(
-                  onPressed: loginState.isLoading
-                      ? null
-                      : _logout,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: loginState.isLoading
-                      ? CircularProgressIndicator()
-                      : Text(LanguageService.translate('logout'), style: TextStyle(fontSize: 16)),
+            children: <Widget>[
+              TextFormField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: LanguageService.translate('username'),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.person),
                 ),
-              ]
-              else ...[
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: LanguageService.translate('username'),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return LanguageService.translate('pleaseEnterYourUsername');
-                    }
-                    return null;
-                  },
-                  enabled: !loginState.isLoading,
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return LanguageService.translate('pleaseEnterYourUsername');
+                  }
+                  return null;
+                },
+                enabled: !loginState.isLoading,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: LanguageService.translate('password'),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
                 ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: LanguageService.translate('password'),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
-                  ),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return LanguageService.translate('pleaseEnterYourPassword');
-                    }
-                    return null;
-                  },
-                  enabled: !loginState.isLoading,
+                obscureText: true,
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return LanguageService.translate('pleaseEnterYourPassword');
+                  }
+                  return null;
+                },
+                enabled: !loginState.isLoading,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: loginState.isLoading
+                    ? null
+                    : _login,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: loginState.isLoading
-                      ? null
-                      : _login,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: loginState.isLoading
-                      ? CircularProgressIndicator()
-                      : Text(LanguageService.translate('login'), style: TextStyle(fontSize: 16)),
-                ),
-              ]
+                child: loginState.isLoading
+                    ? const CircularProgressIndicator()
+                    : Text(LanguageService.translate('login'), style: const TextStyle(fontSize: 16)),
+              ),
             ],
           ),
         ),
@@ -147,9 +108,5 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         }
       }
     }
-  }
-
-  Future<void> _logout() async {
-    await ref.read(loginProvider.notifier).logout();
   }
 }

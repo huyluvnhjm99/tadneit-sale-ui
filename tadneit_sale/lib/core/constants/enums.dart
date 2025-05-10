@@ -5,7 +5,7 @@ enum SaleUserRole {
 
   static SaleUserRole fromString(String value) {
     return SaleUserRole.values.firstWhere(
-          (role) => role.name == value,
+          (SaleUserRole role) => role.name == value,
       orElse: () => SaleUserRole.CLIENT, // Default value if not found
     );
   }
@@ -20,7 +20,7 @@ enum SaleUserStatus {
 
   static SaleUserStatus fromString(String value) {
     return SaleUserStatus.values.firstWhere(
-          (status) => status.name == value,
+          (SaleUserStatus status) => status.name == value,
       orElse: () => SaleUserStatus.INACTIVE
     );
   }
