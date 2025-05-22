@@ -44,6 +44,7 @@ class MyApp extends ConsumerWidget {
                 // Clear message after showing
                 ref.read(errorMessageProvider.notifier).state = null;
               }
+              ref.read(loginProvider.notifier).checkAuthStatus();
             });
 
             ref.listen<LoginState>(loginProvider, (LoginState? previous, LoginState current) {

@@ -22,26 +22,12 @@ class AuthService {
   AuthService(this.ref);
 
   Future<String?> getAccessToken() async {
-    return await _secureStorage.read(key: 'access_token');
+   return await _secureStorage.read(key: 'access_token');
   }
 
   Future<void> saveTokens(String accessToken) async {
     await _secureStorage.write(key: 'access_token', value: accessToken);
   }
-
-  // Future<void> refreshToken() async {
-  //   final refreshToken = await _secureStorage.read(key: 'refresh_token');
-  //   if (refreshToken == null) {
-  //     throw Exception('No refresh token');
-  //   }
-  //
-  //   final apiService = ref.read(apiServiceProvider);
-  //   final response = await apiService.refreshToken(
-  //     RefreshTokenRequest(refreshToken: refreshToken),
-  //   );
-  //
-  //   await saveTokens(response.accessToken, response.refreshToken);
-  // }
 
   Future<bool> login(String username, String password) async {
     try {
