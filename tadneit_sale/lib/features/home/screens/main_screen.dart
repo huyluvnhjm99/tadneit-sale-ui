@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tadneit_sale/features/admin/screens/admin_screen.dart';
 import 'package:tadneit_sale/features/auth/providers/login_provider.dart';
 import 'package:tadneit_sale/features/auth/screens/login_screen.dart';
 import 'package:tadneit_sale/features/auth/screens/profile_screen.dart';
+
 import '../providers/bottom_navigation_provider.dart';
 import '../widgets/bottom_navigation_bar.dart';
 import 'home_screen.dart';
@@ -25,6 +27,8 @@ class MainScreen extends ConsumerWidget {
           return const HomeScreen();
         case 3:
           return isLoggedIn ? const ProfileScreen() : const LoginScreen();
+        case 4:
+          return const AdminScreen();
         default:
           return const HomeScreen();
       }

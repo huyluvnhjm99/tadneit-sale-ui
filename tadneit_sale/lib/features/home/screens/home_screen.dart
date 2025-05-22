@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tadneit_sale/features/home/widgets/language_selector.dart';
-import '../../../features/auth/providers/login_provider.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../features/auth/providers/login_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -17,17 +17,6 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Sondiennuoc.vn'),
         actions: <Widget>[
-          // Show login/logout button based on login state
-          IconButton(
-            icon: Icon(isLoggedIn ? Icons.logout : Icons.login),
-            onPressed: () {
-              if (isLoggedIn) {
-                context.push('/profile');
-              } else {
-                context.push('/login');
-              }
-            },
-          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -36,8 +25,6 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const LanguageSelector(),
-              // Welcome section
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadneit_sale/core/errors/api_exception.dart';
 import 'package:tadneit_sale/data/datasources/api_service.dart';
+
 import '../models/auth/user_profile.dart';
 import 'api_service_provider.dart';
 

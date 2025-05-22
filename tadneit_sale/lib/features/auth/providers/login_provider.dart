@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadneit_sale/core/errors/api_exception.dart';
-import 'package:tadneit_sale/features/auth/base_state.dart';
+import 'package:tadneit_sale/features/base_state.dart';
+
 import '../../../data/providers/auth_provider.dart';
 
 class LoginState extends BaseState {

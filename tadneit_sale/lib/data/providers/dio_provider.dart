@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../app/app_config.dart';
 import '../datasources/auth_interceptor.dart';
 import '../datasources/error_interceptor.dart'; // Add import
-import '../../app/app_config.dart';
 import 'auth_provider.dart';
 
 final Provider<Dio> dioProvider = Provider<Dio>((Ref<Dio> ref) {

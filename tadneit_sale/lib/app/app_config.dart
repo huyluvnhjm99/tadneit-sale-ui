@@ -38,9 +38,11 @@ class AppConfig {
 
     // Initialize configuration
     if (environment == Environment.development && Platform.isAndroid) {
-      apiBaseUrl = 'http://10.0.2.2:7077/api/s';
+      //apiBaseUrl = 'http://10.0.2.2:7077/api/s';
+      apiBaseUrl = 'http://192.168.1.45:7077/api/s';
     } else {
-      apiBaseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:7077/api/sss';
+      //apiBaseUrl = 'http://192.168.1.45:7077/api/s';
+      apiBaseUrl = dotenv.env['API_BASE_URL'] ?? 'http://localhost:7077/api/s';
     }
     appName = dotenv.env['APP_NAME'] ?? 'TadNeit Sale App';
   }

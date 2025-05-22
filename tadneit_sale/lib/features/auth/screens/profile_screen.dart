@@ -1,13 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tadneit_sale/data/models/auth/user_profile.dart';
+import 'package:tadneit_sale/data/models/file/file.dart';
 import 'package:tadneit_sale/data/providers/message_provider.dart';
 import 'package:tadneit_sale/features/auth/providers/profile_provider.dart';
+
 import '../../../core/errors/api_exception.dart';
 import '../../../core/utils/api_error_handler.dart';
+import '../../../core/utils/file_handler/image_util.dart';
 import '../../../core/utils/language_service.dart';
+import '../../../data/datasources/api_service.dart';
+import '../../../data/providers/api_service_provider.dart';
 import '../../../presentation/widgets/common/confirmation_dialog.dart';
 import '../providers/login_provider.dart';
 
@@ -23,7 +30,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  File? profileAvatar;
   bool _isEnableEditMode = false;
+  bool _isSavingProfile = false;
 
   @override
   void dispose() {
@@ -41,6 +50,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void _toggleEditMode() {
     setState(() {
       _isEnableEditMode = !_isEnableEditMode;
+      profileAvatar = null;
     });
   }
 
@@ -51,6 +61,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<void> _saveProfile() async {
     if (_formKey.currentState!.validate()) {
       try {
+        setState(() {
+          _isSavingProfile = true;
+        });
+
+        FileDTO? uploadedAvatar;
+        if (profileAvatar != null) {
+          final ApiService apiService = ref.read(apiServiceProvider);
+          uploadedAvatar = await apiService.uploadFile(
+            profileAvatar!,
+          );
+        }
+
         await ref
             .read(profileProvider.notifier)
             .saveProfile(
@@ -58,6 +80,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 fullName: _fullNameController.text,
                 email: _emailController.text,
                 phone: _phoneController.text,
+                avatar: uploadedAvatar
               ),
             );
 
@@ -69,6 +92,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         if (mounted) {
           ApiErrorHandler.showErrorSnackBar(context, e.message);
         }
+      } finally {
+        profileAvatar = null;
+        setState(() {
+          _isSavingProfile = false;
+        });
       }
     }
   }
@@ -122,19 +150,67 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey[300],
-                image: DecorationImage(
-                  image: NetworkImage(profileState.profile?.avatarUrl ?? ''),
-                  fit: BoxFit.contain,
+          Center(
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey[300],
+                      image: DecorationImage(
+                        opacity: _isEnableEditMode ? 0.4 : 1,
+                        image: profileAvatar != null ? FileImage(profileAvatar!) : NetworkImage(profileState.profile?.avatarUrl ?? ''),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: _isEnableEditMode ?
+                    Center(
+                      child: Wrap(
+                        spacing: 8.0,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.photo),
+                            tooltip: "Add photo",
+                            onPressed: () async {
+                              final File? image = await pickImage(
+                                context,
+                                false,
+                                500,
+                              );
+                              if (image != null) {
+                                setState(() {
+                                  profileAvatar = image;
+                                });
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.add_a_photo),
+                            tooltip: "Take a photo",
+                            onPressed: () async {
+                              final File? image = await pickImage(
+                                context,
+                                true,
+                                500,
+                              );
+                              if (image != null) {
+                                setState(() {
+                                  profileAvatar = image;
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ) : null,
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
           const SizedBox(height: 12),
@@ -240,7 +316,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text(
+              child: _isSavingProfile ? const CircularProgressIndicator() :Text(
                 LanguageService.translate('save'),
                 style: const TextStyle(fontSize: 16),
               ),

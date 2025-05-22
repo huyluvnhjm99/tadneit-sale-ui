@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tadneit_sale/features/auth/screens/profile_screen.dart';
 import 'package:tadneit_sale/features/home/screens/main_screen.dart';
-import '../../features/auth/providers/login_provider.dart';
+
+import '../../features/admin/screens/category_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 
 final Provider<GoRouter> routerProvider = Provider<GoRouter>((Ref<GoRouter> ref) {
-  //final loginState = ref.read(loginProvider);
-
+  //final loginState = ref.watch(loginProvider);
   return GoRouter(
     initialLocation: '/',
     redirect: (BuildContext context, GoRouterState state) {
-      //final isLoggedIn = loginState.isLoggedIn;
+      //final bool isLoggedIn = loginState.isLoggedIn;
       // final isLoading = loginState.isLoading;
       // final isLoginRoute = state.matchedLocation == '/login';
       //
@@ -52,6 +52,10 @@ final Provider<GoRouter> routerProvider = Provider<GoRouter>((Ref<GoRouter> ref)
       GoRoute(
           path: '/profile',
         builder: (BuildContext context, GoRouterState state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/category',
+        builder: (BuildContext context, GoRouterState state) => const CategoryScreen(),
       ),
       // You can add more routes here
       // Define protected routes

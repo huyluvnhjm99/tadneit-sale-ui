@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/src/router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tadneit_sale/core/utils/api_error_handler.dart';
+
 import '../data/providers/message_provider.dart';
+import '../features/auth/providers/login_provider.dart';
 import '../presentation/routes/router.dart';
 import '../presentation/themes/app_theme.dart';
 import 'app_config.dart';
@@ -27,6 +29,7 @@ class MyApp extends ConsumerWidget {
         return Consumer(
           builder: (BuildContext context, WidgetRef ref, _) {
             final String? message = ref.watch(messageProvider);
+            final String? errMessage = ref.watch(errorMessageProvider);
 
             // Show SnackBar when message changes
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -34,6 +37,18 @@ class MyApp extends ConsumerWidget {
                 ApiErrorHandler.showSuccessSnackBar(context, message);
                 // Clear message after showing
                 ref.read(messageProvider.notifier).state = null;
+              }
+
+              if (errMessage != null) {
+                ApiErrorHandler.showErrorSnackBar(context, errMessage);
+                // Clear message after showing
+                ref.read(errorMessageProvider.notifier).state = null;
+              }
+            });
+
+            ref.listen<LoginState>(loginProvider, (LoginState? previous, LoginState current) {
+              if (previous?.isLoggedIn == true && current.isLoggedIn == false && GoRouterState.of(context).uri.toString() != '/login') {
+                context.push('/login');
               }
             });
 

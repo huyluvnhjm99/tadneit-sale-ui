@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadneit_sale/core/constants/enums.dart';
 import 'package:tadneit_sale/data/models/auth/user_profile.dart';
 import 'package:tadneit_sale/features/auth/providers/profile_provider.dart';
+
 import '../../../core/utils/language_service.dart';
 import '../providers/bottom_navigation_provider.dart';
 
@@ -41,7 +42,7 @@ class AppBottomNavigationBar extends ConsumerWidget {
         ),
         if (profile != null && (SaleUserRole.MANAGER == profile.role || SaleUserRole.ADMINISTRATOR == profile.role))
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.settings),
             label: LanguageService.translate('admin'),
           ),
       ],

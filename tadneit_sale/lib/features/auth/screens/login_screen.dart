@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadneit_sale/core/errors/api_exception.dart';
-import '../../../core/utils/api_error_handler.dart';
+import 'package:tadneit_sale/data/providers/message_provider.dart';
+
 import '../../../core/utils/language_service.dart';
 import '../providers/login_provider.dart';
 
@@ -19,6 +20,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   void dispose() {
+    print("dispose login screen!!!!");
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -27,8 +29,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     // Listen to login state
-    final LoginState loginState = ref.watch(loginProvider);
-    final bool isLoggedIn = loginState.isLoggedIn;
+    //final LoginState loginState = ref.watch(loginProvider);
+    //final bool _ = loginState.isLoggedIn;
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +58,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   }
                   return null;
                 },
-                enabled: !loginState.isLoading,
+                //enabled: !loginState.isLoading,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -73,19 +75,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   }
                   return null;
                 },
-                enabled: !loginState.isLoading,
+                //enabled: !loginState.isLoading,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: loginState.isLoading
-                    ? null
-                    : _login,
+                onPressed: _login,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: loginState.isLoading
-                    ? const CircularProgressIndicator()
-                    : Text(LanguageService.translate('login'), style: const TextStyle(fontSize: 16)),
+                child: Text(LanguageService.translate('login'), style: const TextStyle(fontSize: 16)),
               ),
             ],
           ),
@@ -104,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       } on ApiException catch (e) {
         if (mounted) {
-          ApiErrorHandler.showErrorSnackBar(context, e.message);
+          ref.read(errorMessageProvider.notifier).state = LanguageService.translate(e.message);
         }
       }
     }

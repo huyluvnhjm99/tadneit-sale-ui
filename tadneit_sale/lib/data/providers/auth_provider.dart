@@ -7,6 +7,8 @@ import 'package:tadneit_sale/data/datasources/api_service.dart';
 import 'package:tadneit_sale/data/models/auth/login_request.dart';
 import 'package:tadneit_sale/data/providers/message_provider.dart';
 import 'package:tadneit_sale/features/auth/providers/login_provider.dart';
+
+import '../../features/home/providers/bottom_navigation_provider.dart';
 import 'api_service_provider.dart';
 
 final Provider<AuthService> authServiceProvider = Provider<AuthService>((Ref<AuthService> ref) {
@@ -59,5 +61,6 @@ class AuthService {
     await _secureStorage.deleteAll();
     ref.read(loginProvider.notifier).clearIsLoggedIn();
     ref.read(messageProvider.notifier).state = LanguageService.translate('unauthorized');
+    ref.read(bottomNavigationProvider.notifier).setIndex(3);
   }
 }

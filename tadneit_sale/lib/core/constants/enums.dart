@@ -27,3 +27,18 @@ enum SaleUserStatus {
 
   String get name => toString().split('.').last;
 }
+
+enum FileMappingType {
+  CATEGORY,
+  ITEM,
+  OTHER;
+
+  static FileMappingType fromString(String value) {
+    return FileMappingType.values.firstWhere(
+            (FileMappingType type) => type.name == value,
+        orElse: () => FileMappingType.OTHER
+    );
+  }
+
+  String get name => toString().split('.').last;
+}

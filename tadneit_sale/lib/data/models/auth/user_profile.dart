@@ -1,4 +1,5 @@
 import '../../../core/constants/enums.dart';
+import '../file/file.dart';
 
 class UserProfileDTO {
   String? id;
@@ -11,6 +12,7 @@ class UserProfileDTO {
   DateTime? lastLogin;
   SaleUserRole? role;
   SaleUserStatus? status;
+  FileDTO? avatar;
 
   UserProfileDTO({
     this.id,
@@ -23,6 +25,7 @@ class UserProfileDTO {
     this.lastLogin,
     this.role,
     this.status,
+    this.avatar
   });
 
   factory UserProfileDTO.fromJson(Map<String, dynamic> json) {
@@ -37,6 +40,7 @@ class UserProfileDTO {
       lastLogin: json['lastLogin'] != null ? DateTime.parse(json['lastLogin']) : null,
       role: SaleUserRole.fromString(json['role']),
       status: SaleUserStatus.fromString(json['status'] ?? 'INACTIVE'),
+      avatar: json['avatar'] != null && json['avatar'] is Map<String, dynamic> ? FileDTO.fromJson(json['avatar']) : null,
     );
   }
 
@@ -52,6 +56,7 @@ class UserProfileDTO {
       'lastLogin': lastLogin?.toIso8601String(),
       'role': role?.name,
       'status': status?.name,
+      'avatar': avatar
     };
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadneit_sale/data/models/auth/user_profile.dart';
 import 'package:tadneit_sale/data/providers/user_provider.dart';
-import 'package:tadneit_sale/features/auth/base_state.dart';
 import 'package:tadneit_sale/features/auth/providers/login_provider.dart';
+import 'package:tadneit_sale/features/base_state.dart';
 
 import '../../../core/errors/api_exception.dart';
 
