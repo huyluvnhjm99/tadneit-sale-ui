@@ -45,4 +45,9 @@ class CategoryDTO extends BaseDTO {
     data['img'] = img?.toJson();
     return data;
   }
+
+  @override
+  String toString() {
+    return name;
+  }
 }

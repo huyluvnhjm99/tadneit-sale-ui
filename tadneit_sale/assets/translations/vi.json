@@ -18,6 +18,7 @@
   "category": "Danh mục",
   "item": "Sản phẩm",
   "addNewCategory": "Thêm danh mục mới",
+  "addNewItem": "Thêm sản phẩm mới",
   "categoryName": "Tên danh mục",
   "categoryDescription": "Mô tả danh mục",
   "required": "Bắt buộc",
@@ -25,6 +26,10 @@
   "uploadingFiles": "Đang tải các tệp...",
   "uploadFailed": "Tải tệp thất bại!",
   "uploadSucceed": "Tải tệp thành công!",
+  "itemName": "Tên sản phẩm",
+  "itemDescription": "Mô tả",
+  "itemPrice": "Giá sản phẩm",
+  "itemBrand": "Thương hiệu",
 
   "home": "Trang Chủ",
   "search": "Tìm",
@@ -63,6 +68,7 @@
 
   "userUsernameAlreadyExisted": "Tên đăng nhập này đã được sử dụng",
   "registrationSucceed": "Đăng ký thành công",
+  "nameDuplicated": "Tên đã bị trùng!!",
 
   "userFullNameNotnull": "Họ tên là bắt buộc",
   "userFullNameSizeThreeTwenty": "Họ tên phải có từ 3 đến 20 ký tự",

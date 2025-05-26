@@ -51,7 +51,7 @@ class CategoryNotifier extends StateNotifier<CategoryState> {
   Future<int> countCategory() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final int count = await _apiService.getCount();
+      final int count = await _apiService.getCategoryCount();
       state = state.copyWith(isLoading: false);
       return count;
     } on ApiException {

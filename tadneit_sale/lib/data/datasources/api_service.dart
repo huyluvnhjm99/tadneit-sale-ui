@@ -8,6 +8,10 @@ import 'package:tadneit_sale/data/models/auth/refresh_token_request.dart';
 import 'package:tadneit_sale/data/models/auth/user_profile.dart';
 import 'package:tadneit_sale/data/models/file/file.dart';
 import 'package:tadneit_sale/data/models/item/category.dart';
+import 'package:tadneit_sale/data/models/item/itemFilter.dart';
+
+import '../models/base_page_response.dart';
+import '../models/item/item.dart';
 
 part 'api_service.g.dart';
 // dart run build_runner build
@@ -30,9 +34,9 @@ abstract class ApiService {
   @PUT('/u/save')
   Future<UserProfileDTO> saveUserProfile(@Body() UserProfileDTO userProfileDTO);
 
-  // Item Management
+  // Category Management
   @GET('/c/count')
-  Future<int> getCount();
+  Future<int> getCategoryCount();
 
   @GET('/c')
   Future<List<CategoryDTO>> getCategories();
@@ -45,6 +49,16 @@ abstract class ApiService {
 
   @DELETE('/c/{id}')
   Future<void> deleteCategory(@Path('id') String id);
+
+  // Item Management
+  @GET('/i/count')
+  Future<int> getItemCount();
+
+  @GET('/i')
+  Future<PageResponseDTO<ItemDTO>> getItemPaging(@Body() ItemFilter filter);
+
+  @POST('/i')
+  Future<void> saveItem(@Body() ItemDTO item);
 
   // File Management
   @GET('/f/l')

@@ -48,7 +48,7 @@ class AdminItemCard extends StatelessWidget {
                       count.toString(),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 20,
                       ),
                     ),
                   ],

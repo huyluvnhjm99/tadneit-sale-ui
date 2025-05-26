@@ -41,7 +41,7 @@ class FileDTO extends BaseDTO {
       url: json['url'],
       size: json['size'],
       mappingId: json['mappingId'],
-      mappingType: json['mappingId'] != null ? FileMappingType.fromString(json['mappingId']) : null,
+      mappingType: json['mappingType'] != null ? FileMappingType.fromString(json['mappingType']) : null,
       createdBy: json['createdBy'],
       updatedDate: json['updatedDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(json['updatedDate'])
@@ -65,7 +65,7 @@ class FileDTO extends BaseDTO {
     data['url'] = url;
     data['size'] = size;
     data['mappingId'] = mappingId;
-    data['mappingType'] = mappingType;
+    data['mappingType'] = mappingType?.name;
     return data;
   }
 }

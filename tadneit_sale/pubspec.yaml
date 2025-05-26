@@ -54,6 +54,8 @@ dependencies:
   image_picker: ^1.1.2
   image: ^4.5.4
   font_awesome_flutter: ^10.8.0
+  animated_custom_dropdown: ^3.1.1
+  freezed: ^3.0.6
 
   # UI
   flutter_screenutil: ^5.9.3

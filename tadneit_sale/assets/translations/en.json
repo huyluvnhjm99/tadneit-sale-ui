@@ -18,6 +18,7 @@
   "category": "Category",
   "item": "Item",
   "addNewCategory": "Add New Category",
+  "addNewItem": "Add New Item",
   "categoryName": "Category Name",
   "categoryDescription": "Category Description",
   "required": "Required",
@@ -25,6 +26,10 @@
   "uploadingFiles": "Uploading files...",
   "uploadFailed": "Uploading failed!",
   "uploadSucceed": "Uploaded!",
+  "itemName": "Item Name",
+  "itemDescription": "Item Description",
+  "itemPrice": "Item Price",
+  "itemBrand": "Item Brand",
 
   "home": "Home",
   "search": "Search",
@@ -63,6 +68,7 @@
 
   "userUsernameAlreadyExisted": "This username is already taken",
   "registrationSucceed": "Registration successful",
+  "nameDuplicated": "Name is duplicated!!",
 
   "userFullNameNotnull": "Full name is required",
   "userFullNameSizeThreeTwenty": "Full name must be between 3 and 20 characters",

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tadneit_sale/features/admin/screens/item_mng_screen.dart';
 import 'package:tadneit_sale/features/auth/screens/profile_screen.dart';
 import 'package:tadneit_sale/features/home/screens/main_screen.dart';
 
-import '../../features/admin/screens/category_screen.dart';
+import '../../features/admin/screens/category_mng_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 
@@ -56,6 +57,10 @@ final Provider<GoRouter> routerProvider = Provider<GoRouter>((Ref<GoRouter> ref)
       GoRoute(
         path: '/category',
         builder: (BuildContext context, GoRouterState state) => const CategoryScreen(),
+      ),
+      GoRoute(
+        path: '/item-mng',
+        builder: (BuildContext context, GoRouterState state) => const ItemMngScreen(),
       ),
       // You can add more routes here
       // Define protected routes

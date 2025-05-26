@@ -24,7 +24,7 @@ File compressAndResizeImage(File file, final int maxSize) {
   img.Image resizedImage = img.copyResize(image, width: width, height: height);
 
   // Compress the image with JPEG format
-  List<int> compressedBytes = img.encodeJpg(resizedImage, quality: 75);
+  List<int> compressedBytes = img.encodeJpg(resizedImage, quality: 65);
 
   File compressedFile = File(file.path.replaceFirst('.jpg', '_compressed.jpg'));
   compressedFile.writeAsBytesSync(compressedBytes);
