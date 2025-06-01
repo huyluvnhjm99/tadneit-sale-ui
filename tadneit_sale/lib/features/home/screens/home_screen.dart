@@ -1,22 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tadneit_sale/data/models/item/category.dart';
+import 'package:tadneit_sale/data/models/item/item.dart';
+import 'package:tadneit_sale/features/home/widgets/category_card.dart';
 
+import '../../../core/errors/api_exception.dart';
+import '../../../core/utils/api_error_handler.dart';
+import '../../../core/utils/language_service.dart';
 import '../../../features/auth/providers/login_provider.dart';
+import '../../../presentation/widgets/common/image_carousel.dart';
+import '../../admin/providers/category_provider.dart';
+import '../../admin/providers/item_provider.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+
+  final ScrollController _categoryScrollController = ScrollController(
+
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      try {
+        if (ref.read(categoryProvider).categories.isEmpty) {
+          ref.read(categoryProvider.notifier).fetchCategories();
+        }
+      } on ApiException catch (e) {
+        if (mounted) {
+          ApiErrorHandler.showErrorSnackBar(context, e.message);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _categoryScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Get login state
-    final LoginState loginState = ref.watch(loginProvider);
+    final LoginState loginState = ref.read(loginProvider);
     final bool isLoggedIn = loginState.isLoggedIn;
+    final CategoryState categoryState = ref.watch(categoryProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sondiennuoc.vn'),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              // Open Filter dialog
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              // Open Cart
+            },
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -25,6 +79,8 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              _buildCategoriesSelection(categoryState),
+
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -37,16 +93,48 @@ class HomeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'This is a demo Flutter application with Spring Boot backend integration.',
+                        'PLACE HOLDER for SALE Project\n'
+                            'PLACE HOLDER for SALE Project',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],
                   ),
                 ),
               ),
-          
-              const SizedBox(height: 24),
-          
+
+              const SizedBox(height: 20),
+
+              FutureBuilder<List<Widget>>(
+                future: _buildProductViewGroupByCategory(categoryState), // your async method
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No products found'));
+                  }
+
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Top Picks',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+
+                        const SizedBox(height: 10),
+                        ...snapshot.data!,
+                      ],
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 20),
+
               // Public features section
               Text(
                 'Public Features',
@@ -67,7 +155,7 @@ class HomeScreen extends ConsumerWidget {
                   // context.push('/products');
                 },
               ),
-          
+
               _buildFeatureCard(
                 context,
                 title: 'About Us',
@@ -82,9 +170,9 @@ class HomeScreen extends ConsumerWidget {
                   // context.push('/about');
                 },
               ),
-          
+
               const SizedBox(height: 24),
-          
+
               // Protected features section
               Text(
                 'Premium Features',
@@ -108,7 +196,7 @@ class HomeScreen extends ConsumerWidget {
                   }
                 },
               ),
-          
+
               _buildFeatureCard(
                 context,
                 title: 'My Orders',
@@ -131,6 +219,122 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildCategoriesSelection(CategoryState categoryState) {
+    return Scrollbar(
+      controller: _categoryScrollController,
+      thumbVisibility: true,
+      trackVisibility: true,
+      thickness: 3.0,
+      radius: const Radius.circular(6.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        controller: _categoryScrollController,
+        child: Row(
+          spacing: 5.0,
+          children: [
+            if (categoryState.isLoading || categoryState.categories.isEmpty)
+              const CircularProgressIndicator()
+            else
+            ...categoryState.categories
+                .map((CategoryDTO category) => SizedBox(
+              width: 75,
+              height: 120,
+              child: CategoryCard(categoryDTO: category, callBackFunction: () {  }),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<List<Widget>> _buildProductViewGroupByCategory(CategoryState categoryState) async {
+    final futures = categoryState.categories.map((categoryDTO) async {
+      final items = await ref.read(itemProvider.notifier).findItemByCategory(categoryDTO.id ?? '');
+      if (items.isNotEmpty) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Card(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
+                    child: Text(
+                      categoryDTO.name,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  ...items.map((item) => Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 200,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 120,
+                              width: 120,
+                              child: item.images != null
+                                  ? ImageCarouselWidget(
+                                imageUrls: item.images!.map((img) => img.url ?? '').toList(),
+                                height: 120,
+                                width: 120,
+                              )
+                                  : Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: Colors.grey[300],
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(
+                                    '${item.price.toString()} ₫',
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )),
+                ],
+              ),
+            )
+          ],
+        );
+      }
+      return const SizedBox();
+    });
+
+    return await Future.wait(futures);
   }
 
   Widget _buildFeatureCard(

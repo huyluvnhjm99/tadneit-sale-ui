@@ -4,7 +4,7 @@ import 'package:tadneit_sale/core/utils/language_service.dart';
 import 'package:tadneit_sale/features/admin/providers/category_provider.dart';
 import 'package:tadneit_sale/features/admin/providers/item_provider.dart';
 
-import '../../home/widgets/language_selector.dart';
+import '../widgets/language_selector.dart';
 import '../widgets/category_management/category_count_item_card.dart';
 import '../widgets/item_management/item_count_item_card.dart';
 

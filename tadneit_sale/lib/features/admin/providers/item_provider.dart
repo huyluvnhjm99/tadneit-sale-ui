@@ -102,6 +102,13 @@ class ItemNotifier extends StateNotifier<ItemState> {
     }
   }
 
+  Future<List<ItemDTO>> findItemByCategory(String categoryID) async {
+    ItemFilter filter = ItemFilter();
+    filter.categoryId = categoryID;
+    final PageResponseDTO<ItemDTO> response = await _apiService.getItemPaging(filter);
+    return response.content;
+  }
+
   Future<int> countItems() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {

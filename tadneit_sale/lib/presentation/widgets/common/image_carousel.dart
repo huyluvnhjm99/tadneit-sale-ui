@@ -7,12 +7,14 @@ class ImageCarouselWidget extends StatefulWidget {
   final List<String> imageUrls;
   final double? height;
   final double? width;
+  final int? switchDuration;
 
   const ImageCarouselWidget({
     super.key,
     required this.imageUrls,
     this.height,
     this.width,
+    this.switchDuration
   });
 
   @override
@@ -42,7 +44,7 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
   }
 
   void _startAutoSwitch() {
-    _autoSwitchTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+    _autoSwitchTimer = Timer.periodic(Duration(seconds: widget.switchDuration ?? 5), (Timer timer) {
       if (!_isUserInteracting && widget.imageUrls.length > 1) {
         final int nextIndex = (_currentIndex + 1) % widget.imageUrls.length;
         _pageController.animateToPage(

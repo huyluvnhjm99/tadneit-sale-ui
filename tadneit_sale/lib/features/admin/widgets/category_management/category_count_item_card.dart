@@ -8,7 +8,7 @@ import '../../providers/category_provider.dart';
 import '../admin_item_card.dart';
 
 Widget categoryCountItemCard(BuildContext context, WidgetRef ref) {
-  final AsyncValue<int> categoryCounting = ref.watch(countCategoryProvider);
+   AsyncValue<int> categoryCounting = ref.watch(countCategoryProvider);
   return categoryCounting.when(
     data: (int count) => AdminItemCard(
       count: count,
@@ -22,7 +22,7 @@ Widget categoryCountItemCard(BuildContext context, WidgetRef ref) {
         ApiErrorHandler.showErrorSnackBar(context, error.toString());
       });
       return _buildErrorPlaceholder(context, () {
-        ref.refresh(countCategoryProvider);
+        categoryCounting = ref.refresh(countCategoryProvider);
       });
     },
     loading: () => const Center(
