@@ -25,12 +25,14 @@ class CategoryCard extends StatelessWidget {
       children: [
         _buildIcon(),
         Expanded(
-          child: Text(
-            categoryDTO.name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12),
-            textAlign: TextAlign.center,
+          child: Center(
+            child: Text(
+              categoryDTO.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ],
