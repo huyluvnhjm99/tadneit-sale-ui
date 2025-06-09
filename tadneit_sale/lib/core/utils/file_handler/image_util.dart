@@ -48,3 +48,20 @@ Future<File?> pickImage(BuildContext context, bool isOpenCamera, int size) async
 
   return null;
 }
+
+Future<List<File>?> pickImages(BuildContext context, bool isOpenCamera, int size) async {
+  final List<File>? files = await FilePickerDialog.show(
+    context,
+    allowMultiple: true,
+    allowedExtensions: <String>['jpg', 'jpeg', 'png', 'gif', 'mov', 'heic'],
+    pickerService: ImagePickerService(
+      imageSource: isOpenCamera ? ImageSource.camera : ImageSource.gallery,
+    ),
+  );
+
+  if (files != null && files.isNotEmpty) {
+    return files.map((file) => compressAndResizeImage(file, size)).toList();
+  }
+
+  return null;
+}

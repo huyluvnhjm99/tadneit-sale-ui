@@ -87,11 +87,11 @@ class _HomeCategoryItemViewState extends ConsumerState<HomeCategoryItemView> {
                                     width: 120,
                                     child:
                                     item.images != null
-                                        ? ImageCarouselWidget(
-                                      imageUrls: item.images!.map((img) => img.url ?? '').toList(),
-                                      height: 120,
-                                      width: 120,
-                                    )
+                                        ? NetworkImageCarouselWidget(
+                                          imageUrls: item.images!.map((img) => img.url ?? '').toList(),
+                                          height: 120,
+                                          width: 120,
+                                        )
                                         : Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8.0),

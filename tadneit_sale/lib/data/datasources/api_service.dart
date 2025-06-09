@@ -7,6 +7,7 @@ import 'package:tadneit_sale/data/models/auth/login_request.dart';
 import 'package:tadneit_sale/data/models/auth/refresh_token_request.dart';
 import 'package:tadneit_sale/data/models/auth/user_profile.dart';
 import 'package:tadneit_sale/data/models/file/file.dart';
+import 'package:tadneit_sale/data/models/item/banner.dart';
 import 'package:tadneit_sale/data/models/item/category.dart';
 import 'package:tadneit_sale/data/models/item/itemFilter.dart';
 
@@ -67,6 +68,22 @@ abstract class ApiService {
   @POST('/f/u-i')
   @MultiPart()
   Future<FileDTO> uploadFile(@Part(name: 'file') File file);
+
+  // Banner Management
+  @GET('/b/count')
+  Future<int> getBannerCount();
+
+  @GET('/b')
+  Future<List<BannerDTO>> getBanners();
+
+  @POST('/b')
+  Future<void> saveBanner(@Body() BannerDTO bannerDTO);
+
+  @PUT('/b')
+  Future<void> updateBanner(@Body() BannerDTO BannerDTO);
+
+  @DELETE('/b/{id}')
+  Future<void> deleteBanner(@Path('id') String id);
 
   // Example of a protected endpoint
   // @GET('/users/me')

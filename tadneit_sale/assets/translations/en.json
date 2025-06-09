@@ -19,6 +19,7 @@
   "item": "Item",
   "addNewCategory": "Add New Category",
   "addNewItem": "Add New Item",
+  "addNewBanner": "Add New Banner",
   "categoryName": "Category Name",
   "categoryDescription": "Category Description",
   "required": "Required",
@@ -33,6 +34,9 @@
   "viewMore": "View more",
   "buy": "Buy",
   "buyNow": "Buy Now",
+  "banner": "Banner",
+  "bannerName": "Banner Name",
+  "bannerDescription": "Banner Description",
 
   "home": "Home",
   "search": "Search",

@@ -1,27 +1,27 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class ImageCarouselWidget extends StatefulWidget {
-  final List<String> imageUrls;
+abstract class BaseImageCarouselWidget extends StatefulWidget {
   final double? height;
   final double? width;
   final int? switchDuration;
 
-  const ImageCarouselWidget({
+  const BaseImageCarouselWidget({
     super.key,
-    required this.imageUrls,
     this.height,
     this.width,
-    this.switchDuration
+    this.switchDuration,
   });
 
-  @override
-  State<ImageCarouselWidget> createState() => _ImageCarouselWidgetState();
+  int get itemCount;
+  Widget buildImageWidget(BuildContext context, int index);
+  Widget buildExpandedImageWidget(BuildContext context, int index);
 }
 
-class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
+abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> extends State<T> {
   late PageController _pageController;
   late Timer _autoSwitchTimer;
   int _currentIndex = 0;
@@ -31,7 +31,7 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0);
-    if (widget.imageUrls.isNotEmpty) {
+    if (widget.itemCount > 0) {
       _startAutoSwitch();
     }
   }
@@ -45,8 +45,8 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
 
   void _startAutoSwitch() {
     _autoSwitchTimer = Timer.periodic(Duration(seconds: widget.switchDuration ?? 5), (Timer timer) {
-      if (!_isUserInteracting && widget.imageUrls.length > 1) {
-        final int nextIndex = (_currentIndex + 1) % widget.imageUrls.length;
+      if (!_isUserInteracting && widget.itemCount > 1) {
+        final int nextIndex = (_currentIndex + 1) % widget.itemCount;
         _pageController.animateToPage(
           nextIndex,
           duration: const Duration(milliseconds: 300),
@@ -59,7 +59,7 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
   void _goToPrevious() {
     _setUserInteracting();
     final int previousIndex = _currentIndex == 0
-        ? widget.imageUrls.length - 1
+        ? widget.itemCount - 1
         : _currentIndex - 1;
 
     _pageController.animateToPage(
@@ -71,7 +71,7 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
 
   void _goToNext() {
     _setUserInteracting();
-    final int nextIndex = (_currentIndex + 1) % widget.imageUrls.length;
+    final int nextIndex = (_currentIndex + 1) % widget.itemCount;
 
     _pageController.animateToPage(
       nextIndex,
@@ -92,9 +92,10 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
   void _expandImage() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (BuildContext context) => _ImageExpandedView(
-          imageUrls: widget.imageUrls,
+        builder: (BuildContext context) => _BaseImageExpandedView(
+          itemCount: widget.itemCount,
           initialIndex: _currentIndex,
+          buildImageWidget: widget.buildExpandedImageWidget,
         ),
         fullscreenDialog: true,
       ),
@@ -103,8 +104,10 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final double iconSize = ((widget.height ?? 200) / 200) * 18;
+
     // Handle empty list
-    if (widget.imageUrls.isEmpty) {
+    if (widget.itemCount == 0) {
       return Container(
         height: widget.height ?? 200,
         width: widget.width,
@@ -140,30 +143,14 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
                   _currentIndex = index;
                 });
               },
-              itemCount: widget.imageUrls.length,
-              itemBuilder: (BuildContext context, int index) {
-                return CachedNetworkImage(
-                  imageUrl: widget.imageUrls[index],
-                  fit: BoxFit.cover,
-                  placeholder: (BuildContext context, String url) => Container(
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                  errorWidget: (BuildContext context, String url, dynamic error) => Container(
-                    color: Colors.grey[300],
-                    child: const Center(
-                      child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
-                    ),
-                  ),
-                );
-              },
+              itemCount: widget.itemCount,
+              itemBuilder: widget.buildImageWidget,
             ),
           ),
 
-          // Left navigation button
-          if (widget.imageUrls.length > 1)
+          // Navigation buttons and indicators (same as before)
+          if (widget.itemCount > 1) ...[
+            // Left navigation button
             Positioned(
               left: 8,
               top: 0,
@@ -180,15 +167,14 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
                     child: Icon(
                       Icons.chevron_left,
                       color: Colors.white,
-                      size: ((widget.height ?? 200) / 200) * 24,
+                      size: iconSize,
                     ),
                   ),
                 ),
               ),
             ),
 
-          // Right navigation button
-          if (widget.imageUrls.length > 1)
+            // Right navigation button
             Positioned(
               right: 8,
               top: 0,
@@ -205,36 +191,14 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
                     child: Icon(
                       Icons.chevron_right,
                       color: Colors.white,
-                      size: ((widget.height ?? 200) / 200) * 24,
+                      size: iconSize,
                     ),
                   ),
                 ),
               ),
             ),
 
-          // Expand button (center top)
-          Positioned(
-            top: 5,
-            right: 5,
-            child: GestureDetector(
-              onTap: _expandImage,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Colors.black12,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.fullscreen,
-                  color: Colors.white,
-                  size: ((widget.height ?? 200) / 200) * 24,
-                ),
-              ),
-            ),
-          ),
-
-          // Page indicators
-          if (widget.imageUrls.length > 1)
+            // Page indicators
             Positioned(
               bottom: 12,
               left: 0,
@@ -242,7 +206,7 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  widget.imageUrls.length,
+                  widget.itemCount,
                       (int index) => Container(
                     margin: const EdgeInsets.symmetric(horizontal: 3),
                     width: 8,
@@ -257,27 +221,156 @@ class _ImageCarouselWidgetState extends State<ImageCarouselWidget> {
                 ),
               ),
             ),
+          ],
+
+          // Expand button
+          Positioned(
+            top: 3,
+            right: 3,
+            child: GestureDetector(
+              onTap: _expandImage,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.black12,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.fullscreen,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-// Private fullscreen view widget
-class _ImageExpandedView extends StatefulWidget {
+// Network Image Carousel
+class NetworkImageCarouselWidget extends BaseImageCarouselWidget {
   final List<String> imageUrls;
-  final int initialIndex;
 
-  const _ImageExpandedView({
+  const NetworkImageCarouselWidget({
+    super.key,
     required this.imageUrls,
-    required this.initialIndex,
+    super.height,
+    super.width,
+    super.switchDuration,
   });
 
   @override
-  State<_ImageExpandedView> createState() => _ImageExpandedViewState();
+  int get itemCount => imageUrls.length;
+
+  @override
+  Widget buildImageWidget(BuildContext context, int index) {
+    return CachedNetworkImage(
+      imageUrl: imageUrls[index],
+      fit: BoxFit.cover,
+      placeholder: (BuildContext context, String url) => Container(
+        color: Colors.grey[200],
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      errorWidget: (BuildContext context, String url, dynamic error) => Container(
+        color: Colors.grey[300],
+        child: const Center(
+          child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget buildExpandedImageWidget(BuildContext context, int index) {
+    return CachedNetworkImage(
+      imageUrl: imageUrls[index],
+      fit: BoxFit.contain,
+      placeholder: (BuildContext context, String url) => const Center(
+        child: CircularProgressIndicator(color: Colors.white),
+      ),
+      errorWidget: (BuildContext context, String url, dynamic error) => const Center(
+        child: Icon(Icons.broken_image, size: 64, color: Colors.white),
+      ),
+    );
+  }
+
+  @override
+  State<NetworkImageCarouselWidget> createState() => _NetworkImageCarouselWidgetState();
 }
 
-class _ImageExpandedViewState extends State<_ImageExpandedView> {
+class _NetworkImageCarouselWidgetState extends BaseImageCarouselWidgetState<NetworkImageCarouselWidget> {}
+
+// File Image Carousel
+class FileImageCarouselWidget extends BaseImageCarouselWidget {
+  final List<File> imageFiles;
+
+  const FileImageCarouselWidget({
+    super.key,
+    required this.imageFiles,
+    super.height,
+    super.width,
+    super.switchDuration,
+  });
+
+  @override
+  int get itemCount => imageFiles.length;
+
+  @override
+  Widget buildImageWidget(BuildContext context, int index) {
+    return Image.file(
+      imageFiles[index],
+      fit: BoxFit.cover,
+      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+        return Container(
+          color: Colors.grey[300],
+          child: const Center(
+            child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildExpandedImageWidget(BuildContext context, int index) {
+    return Image.file(
+      imageFiles[index],
+      fit: BoxFit.contain,
+      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+        return const Center(
+          child: Icon(Icons.broken_image, size: 64, color: Colors.white),
+        );
+      },
+    );
+  }
+
+  @override
+  State<FileImageCarouselWidget> createState() => _FileImageCarouselWidgetState();
+}
+
+class _FileImageCarouselWidgetState extends BaseImageCarouselWidgetState<FileImageCarouselWidget> {}
+
+// Base expanded view
+class _BaseImageExpandedView extends StatefulWidget {
+  final int itemCount;
+  final int initialIndex;
+  final Widget Function(BuildContext, int) buildImageWidget;
+
+  const _BaseImageExpandedView({
+    required this.itemCount,
+    required this.initialIndex,
+    required this.buildImageWidget,
+  });
+
+  @override
+  State<_BaseImageExpandedView> createState() => _BaseImageExpandedViewState();
+}
+
+class _BaseImageExpandedViewState extends State<_BaseImageExpandedView> {
   late PageController _pageController;
   late int _currentIndex;
 
@@ -303,7 +396,7 @@ class _ImageExpandedViewState extends State<_ImageExpandedView> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
-          '${_currentIndex + 1} / ${widget.imageUrls.length}',
+          '${_currentIndex + 1} / ${widget.itemCount}',
           style: const TextStyle(color: Colors.white),
         ),
       ),
@@ -314,20 +407,11 @@ class _ImageExpandedViewState extends State<_ImageExpandedView> {
             _currentIndex = index;
           });
         },
-        itemCount: widget.imageUrls.length,
+        itemCount: widget.itemCount,
         itemBuilder: (BuildContext context, int index) {
           return InteractiveViewer(
             child: Center(
-              child: CachedNetworkImage(
-                imageUrl: widget.imageUrls[index],
-                fit: BoxFit.contain,
-                placeholder: (BuildContext context, String url) => const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-                errorWidget: (BuildContext context, String url, dynamic error) => const Center(
-                  child: Icon(Icons.broken_image, size: 64, color: Colors.white),
-                ),
-              ),
+              child: widget.buildImageWidget(context, index),
             ),
           );
         },

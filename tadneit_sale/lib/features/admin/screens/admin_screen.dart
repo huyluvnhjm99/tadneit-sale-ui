@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadneit_sale/core/utils/language_service.dart';
 import 'package:tadneit_sale/features/admin/providers/category_provider.dart';
 import 'package:tadneit_sale/features/admin/providers/item_provider.dart';
+import 'package:tadneit_sale/features/admin/widgets/banner_management/banner_count_item_card.dart';
 
 import '../widgets/category_management/category_count_item_card.dart';
 import '../widgets/item_management/item_count_item_card.dart';
@@ -20,7 +21,7 @@ class AdminScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Adding padding for better spacing
+          padding: const EdgeInsets.all(16.0),
           child: RefreshIndicator(
             onRefresh: () async {
               ref.invalidate(countCategoryProvider);
@@ -56,6 +57,7 @@ class AdminScreen extends ConsumerWidget {
           children: [
             categoryCountItemCard(context, ref),
             itemCountItemCard(context, ref),
+            bannerCountItemCard(context, ref),
           ],
         ),
       ],

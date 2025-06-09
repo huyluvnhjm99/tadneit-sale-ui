@@ -154,18 +154,19 @@ class _ItemMngScreenState extends ConsumerState<ItemMngScreen> {
         child: Row(
             children: [
               SizedBox(height: 120, width: 120, child:item.images != null
-                  ? ImageCarouselWidget(
-                imageUrls: item.images!.map((FileDTO img) => img.url ?? '').toList(),
-                height: 120,
-                width: 120,
-              ) : Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.grey[300]
-                ),
-                child: const Center(
-                  child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
-                ))
+                  ? NetworkImageCarouselWidget(
+                    imageUrls: item.images!.map((FileDTO img) => img.url ?? '').toList(),
+                    height: 120,
+                    width: 120,
+                  )
+                  : Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: Colors.grey[300]
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
+                    ))
               ),
               Expanded(
                 child: Padding(

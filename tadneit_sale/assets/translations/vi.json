@@ -19,6 +19,7 @@
   "item": "Sản phẩm",
   "addNewCategory": "Thêm danh mục mới",
   "addNewItem": "Thêm sản phẩm mới",
+  "addNewBanner": "Thêm Banner mới",
   "categoryName": "Tên danh mục",
   "categoryDescription": "Mô tả danh mục",
   "required": "Bắt buộc",
@@ -33,6 +34,9 @@
   "viewMore": "Xem thêm",
   "buy": "Mua",
   "buyNow": "Mua ngay",
+  "banner": "Banner",
+  "bannerName": "Tên Banner",
+  "bannerDescription": "Mô tả Banner",
 
   "home": "Trang Chủ",
   "search": "Tìm",

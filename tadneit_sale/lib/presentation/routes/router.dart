@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tadneit_sale/features/admin/screens/banner_mng_screen.dart';
 import 'package:tadneit_sale/features/admin/screens/item_mng_screen.dart';
 import 'package:tadneit_sale/features/auth/screens/profile_screen.dart';
 import 'package:tadneit_sale/features/home/screens/main_screen.dart';
@@ -55,8 +56,12 @@ final Provider<GoRouter> routerProvider = Provider<GoRouter>((Ref<GoRouter> ref)
         builder: (BuildContext context, GoRouterState state) => const ProfileScreen(),
       ),
       GoRoute(
-        path: '/category',
-        builder: (BuildContext context, GoRouterState state) => const CategoryScreen(),
+        path: '/category-mng',
+        builder: (BuildContext context, GoRouterState state) => const CategoryManagementScreen(),
+      ),
+      GoRoute(
+        path: '/banner-mng',
+        builder: (BuildContext context, GoRouterState state) => const BannerManagementScreen(),
       ),
       GoRoute(
         path: '/item-mng',

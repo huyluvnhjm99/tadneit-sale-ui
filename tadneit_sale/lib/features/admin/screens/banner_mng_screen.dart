@@ -4,20 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tadneit_sale/core/errors/api_exception.dart';
 import 'package:tadneit_sale/core/utils/api_error_handler.dart';
 import 'package:tadneit_sale/core/utils/language_service.dart';
-import 'package:tadneit_sale/data/models/item/category.dart';
-import 'package:tadneit_sale/features/admin/providers/category_provider.dart';
-import 'package:tadneit_sale/features/admin/widgets/category_management/category_add_form.dart';
+import 'package:tadneit_sale/data/models/item/banner.dart';
+import 'package:tadneit_sale/features/admin/providers/banner_provider.dart';
+import 'package:tadneit_sale/features/admin/widgets/banner_management/banner_add_form.dart';
+import 'package:tadneit_sale/presentation/widgets/common/image_carousel.dart';
 
 import '../../../presentation/widgets/common/confirmation_dialog.dart';
 
-class CategoryManagementScreen extends ConsumerStatefulWidget {
-  const CategoryManagementScreen({super.key});
+class BannerManagementScreen extends ConsumerStatefulWidget {
+  const BannerManagementScreen({super.key});
 
   @override
-  ConsumerState<CategoryManagementScreen> createState() => _CategoryScreenState();
+  ConsumerState<BannerManagementScreen> createState() => _BannerManagementScreenState();
 }
 
-class _CategoryScreenState extends ConsumerState<CategoryManagementScreen> {
+class _BannerManagementScreenState extends ConsumerState<BannerManagementScreen> {
   bool _isEditable = false;
 
   @override
@@ -25,7 +26,7 @@ class _CategoryScreenState extends ConsumerState<CategoryManagementScreen> {
     super.initState();
     Future.microtask(() {
       try {
-        ref.read(categoryProvider.notifier).fetchCategories();
+        ref.read(bannerProvider.notifier).fetchBanners();
       } on ApiException catch (e) {
         if (mounted) {
           ApiErrorHandler.showErrorSnackBar(context, e.message);
@@ -41,10 +42,10 @@ class _CategoryScreenState extends ConsumerState<CategoryManagementScreen> {
   }
 
   // Preload images that are about to come into view
-  void _preloadImages(List<CategoryDTO> categories, int currentIndex) {
+  void _preloadImages(List<BannerDTO> banners, int currentIndex) {
     final int preloadRange = 5; // Preload 5 items ahead
-    for (int i = currentIndex; i < (currentIndex + preloadRange).clamp(0, categories.length); i++) {
-      final String? imageUrl = categories[i].img?.url;
+    for (int i = currentIndex; i < (currentIndex + preloadRange).clamp(0, banners.length); i++) {
+      final String? imageUrl = (banners[i].imgs != null) ? (banners[i].imgs?[0].url) : null;
       if (imageUrl != null && imageUrl.isNotEmpty) {
         // Preload image into cache
         precacheImage(CachedNetworkImageProvider(imageUrl), context);
@@ -54,11 +55,11 @@ class _CategoryScreenState extends ConsumerState<CategoryManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final CategoryState categoryState = ref.watch(categoryProvider);
+    final BannerState bannerState = ref.watch(bannerProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(LanguageService.translate('category')),
+        title: Text(LanguageService.translate('banner')),
         automaticallyImplyLeading: true,
         actions: [
           IconButton(
@@ -71,57 +72,57 @@ class _CategoryScreenState extends ConsumerState<CategoryManagementScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: categoryState.isLoading
+        child: bannerState.isLoading
             ? const Center(child: CircularProgressIndicator())
-            : categoryState.categories.isEmpty
+            : bannerState.banners.isEmpty
             ? const Center(child: Text('No data'))
             : RefreshIndicator(
-          onRefresh: () => ref.read(categoryProvider.notifier).fetchCategories(),
+          onRefresh: () => ref.read(bannerProvider.notifier).fetchBanners(),
           child: ListView.builder(
             // Add caching for better performance
             cacheExtent: 1000, // Cache 1000 pixels ahead
-            itemCount: categoryState.categories.length,
+            itemCount: bannerState.banners.length,
             itemBuilder: (BuildContext context, int index) {
-              final CategoryDTO category = categoryState.categories[index];
+              final BannerDTO bannerDTO = bannerState.banners[index];
 
               if (index % 10 == 0) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _preloadImages(categoryState.categories, index);
+                  _preloadImages(bannerState.banners, index);
                 });
               }
 
-              return _CategoryListItem(
-                category: category,
+              return _BannerListItem(
+                bannerDTO: bannerDTO,
                 isEditable: _isEditable,
-                onEdit: () => _handleEdit(category),
-                onDelete: () => _showCategoryDeleteConfirmationDialog(category),
+                onEdit: () => _handleEdit(bannerDTO),
+                onDelete: () => _showBannerDeleteConfirmationDialog(bannerDTO),
               );
             },
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddCategoryDialog(context),
-        tooltip: LanguageService.translate('addNewCategory'),
+        onPressed: () => _showAddBannerDialog(context),
+        tooltip: LanguageService.translate('addNewBanner'),
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _handleEdit(CategoryDTO category) {
+  void _handleEdit(BannerDTO bannerDTO) {
     // Handle edit logic here
-    print('Edit category: ${category.name}');
+    print('Edit Banner: ${bannerDTO.name}');
   }
 
-  void _showCategoryDeleteConfirmationDialog(CategoryDTO category) {
+  void _showBannerDeleteConfirmationDialog(BannerDTO bannerDTO) {
     ConfirmDialog.show(
       context,
-      message: 'Are you sure you want to delete category \'${category.name}\'?',
+      message: 'Are you sure you want to delete Banner \'${bannerDTO.name}\'?',
       confirmText: 'OK',
       cancelText: LanguageService.translate('cancel'),
       onConfirm: () async {
-        if (category.id != null) {
-          ref.read(categoryProvider.notifier).deleteCategory(category.id ?? '');
+        if (bannerDTO.id != null) {
+          ref.read(bannerProvider.notifier).deleteBanner(bannerDTO.id ?? '');
         }
         ApiErrorHandler.showSuccessSnackBar(
             context,
@@ -131,26 +132,26 @@ class _CategoryScreenState extends ConsumerState<CategoryManagementScreen> {
     );
   }
 
-  void _showAddCategoryDialog(BuildContext context) {
+  void _showAddBannerDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (BuildContext context) => AddCategoryForm(ref),
+      builder: (BuildContext context) => AddBannerForm(ref),
     );
   }
 }
 
-class _CategoryListItem extends StatelessWidget {
-  final CategoryDTO category;
+class _BannerListItem extends StatelessWidget {
+  final BannerDTO bannerDTO;
   final bool isEditable;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const _CategoryListItem({
-    required this.category,
+  const _BannerListItem({
+    required this.bannerDTO,
     required this.isEditable,
     required this.onEdit,
     required this.onDelete,
@@ -160,57 +161,31 @@ class _CategoryListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: _buildLeadingImage(),
-      title: Text(category.name),
-      subtitle: Text(category.description),
+      title: Text(bannerDTO.name),
+      subtitle: Text(bannerDTO.description),
       trailing: isEditable ? _buildTrailingActions() : null,
     );
   }
 
   Widget _buildLeadingImage() {
-    if (category.img?.url == null || category.img!.url!.isEmpty) {
+    if (bannerDTO.imgs == null || bannerDTO.imgs!.isEmpty) {
       return const SizedBox(
         width: 70,
         height: 70,
-        child: Icon(Icons.category, size: 40),
+        child: Icon(Icons.announcement, size: 40),
       );
     }
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      child: CachedNetworkImage(
-        imageUrl: category.img!.url!,
-        width: 70,
-        height: 70,
-        fit: BoxFit.cover,
-        fadeInDuration: const Duration(milliseconds: 200),
-        fadeOutDuration: const Duration(milliseconds: 100),
-
-        // Smaller, faster loading placeholder
-        placeholder: (context, url) => Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(Icons.image, color: Colors.grey),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 70,
+          maxHeight: 70
         ),
-
-        errorWidget: (context, url, error) => Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(Icons.broken_image, color: Colors.grey),
-        ),
-
-        // Memory cache configuration
-        memCacheWidth: 140, // 2x the display size for sharp images
-        memCacheHeight: 140,
-        maxWidthDiskCache: 200,
-        maxHeightDiskCache: 200,
+        child: NetworkImageCarouselWidget(
+          imageUrls: bannerDTO.imgs!.map((img) => img.url).whereType<String>().toList()
+        )
       ),
     );
   }
