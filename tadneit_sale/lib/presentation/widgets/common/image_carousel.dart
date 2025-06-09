@@ -105,6 +105,8 @@ abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> e
   @override
   Widget build(BuildContext context) {
     final double iconSize = ((widget.height ?? 200) / 200) * 18;
+    const Color indicatorDimColor = Colors.black38;
+    const Color indicatorTextColor = Colors.white;
 
     // Handle empty list
     if (widget.itemCount == 0) {
@@ -152,7 +154,7 @@ abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> e
           if (widget.itemCount > 1) ...[
             // Left navigation button
             Positioned(
-              left: 8,
+              left: 3,
               top: 0,
               bottom: 0,
               child: Center(
@@ -161,7 +163,7 @@ abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> e
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: const BoxDecoration(
-                      color: Colors.black12,
+                      color: indicatorDimColor,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -176,7 +178,7 @@ abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> e
 
             // Right navigation button
             Positioned(
-              right: 8,
+              right: 3,
               top: 0,
               bottom: 0,
               child: Center(
@@ -185,7 +187,7 @@ abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> e
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: const BoxDecoration(
-                      color: Colors.black12,
+                      color: indicatorDimColor,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -200,27 +202,50 @@ abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> e
 
             // Page indicators
             Positioned(
-              bottom: 12,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  widget.itemCount,
-                      (int index) => Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _currentIndex == index
-                          ? Colors.white
-                          : Colors.white54,
+              right: 3,
+              bottom: 3,
+              child: Container(
+                width: 40,
+                decoration: BoxDecoration(
+                  color: indicatorDimColor,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    '$_currentIndex / ${widget.itemCount}',
+                    style: const TextStyle(
+                      color: Colors.white,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
+
+            // if (widget.itemCount > 3)
+            //   Positioned(
+            //     bottom: 12,
+            //     left: 0,
+            //     right: 0,
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: List.generate(
+            //         widget.itemCount,
+            //             (int index) => Container(
+            //           margin: const EdgeInsets.symmetric(horizontal: 3),
+            //           width: 8,
+            //           height: 8,
+            //           decoration: BoxDecoration(
+            //             shape: BoxShape.circle,
+            //             color: _currentIndex == index
+            //                 ? Colors.white
+            //                 : Colors.white54,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   )
           ],
 
           // Expand button
@@ -232,7 +257,7 @@ abstract class BaseImageCarouselWidgetState<T extends BaseImageCarouselWidget> e
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
-                  color: Colors.black12,
+                  color: indicatorDimColor,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
